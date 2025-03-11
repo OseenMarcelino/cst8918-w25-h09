@@ -17,7 +17,7 @@ terraform {
 
 # Define providers and their configuration parameters
 provider "azurerm" {
-  subscription_id = "b40c6add-0fa1-4055-9718-f3d28641e566"
+  subscription_id = ""
   features {}
 }
 
