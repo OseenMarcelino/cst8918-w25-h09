@@ -6,7 +6,7 @@ terraform {
     # Azure Resource Manager provider and version
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 3.0.2"
+      version = "~> 4.22.0"
     }
     cloudinit = {
       source  = "hashicorp/cloudinit"
@@ -15,9 +15,9 @@ terraform {
   }
 }
 
-# Define providers and their config params
+# Define providers and their configuration parameters
 provider "azurerm" {
-  # Leave the features block empty to accept all defaults
+  subscription_id = "b40c6add-0fa1-4055-9718-f3d28641e566"
   features {}
 }
 
@@ -25,11 +25,13 @@ provider "cloudinit" {
   # Configuration options
 }
 
-resource "azurerm_resource_group" "example" { 
+# Define the Azure Resource Group
+resource "azurerm_resource_group" "example" {
   name     = "marc0430-rg"
-  location = "East US"
+  location = "canadacentral"
 }
 
+# Define the Azure Kubernetes Cluster
 resource "azurerm_kubernetes_cluster" "example" {
   name                = "marc0430-aks1"
   location            = azurerm_resource_group.example.location
@@ -39,7 +41,7 @@ resource "azurerm_kubernetes_cluster" "example" {
   default_node_pool {
     name                = "default"
     vm_size             = "Standard_B2s"
-    enable_auto_scaling = true
+    auto_scaling_enabled = true
     min_count           = 1
     max_count           = 3
   }
@@ -48,13 +50,12 @@ resource "azurerm_kubernetes_cluster" "example" {
     type = "SystemAssigned"
   }
 
-  kubernetes_version = "latest"
-
   tags = {
     Environment = "Production"
   }
 }
 
+# Output the Kubernetes config
 output "kube_config" {
   value     = azurerm_kubernetes_cluster.example.kube_config_raw
   sensitive = true
